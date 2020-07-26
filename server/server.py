@@ -39,7 +39,7 @@ def login():
         return "Success!", 200
     
     else:
-        return "Not authed", 403
+        return "Incorrect username or password", 403
 
 @app.route("/logout", methods=["GET"])
 def logout():

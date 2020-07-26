@@ -1,17 +1,24 @@
-const frmLogin = document.getElementById("frmLogin");
+$(function(){
+    var frmLogin = document.getElementById("frmLogin");
+    function SubmitForm(){
+        $.post("/login", $('#frmLogin').serialize(), function(data, status){
+            alert(status);
+            if(status == "success"){
+                window.location = "/dashboard";
+            }
+        }).fail(function(fData, status){
+            var errMessage = fData.responseText;
+            $("#txtErr").text(errMessage);
+        })
+    }
+    
+    frmLogin.addEventListener("submit", SubmitForm);
 
-function SubmitForm(){
-    alert("SENDING!");
-    $.post("/login", $('#frmLogin').serialize(), function(data, status){
-        alert(status);
-        if(status == "success"){
-            window.location = "/dashboard";
-        }
-        else{
-            alert(data);
-            alert("Error");
-        }
-    });
-}
+    var funcClearErrText = function(){
+        $("#txtErr").text("");
+    }
 
-frmLogin.addEventListener("submit", SubmitForm);
+    $("#txtUsername").on("input", funcClearErrText);
+    $("#txtPassword").on("input", funcClearErrText);
+});
+
