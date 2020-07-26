@@ -48,13 +48,18 @@ def logout():
 
     
 
-@app.route("/dashboard", defaults={'endpoint': None})
-@app.route("/dashboard/<endpoint>", methods=["GET"])
-def dashboard(endpoint):    
-    if not Authed("/dashboard"): return "Not authed", 403
-    if endpoint == None: return send_from_directory("static/dashboard", "index.html")
-    return f"Endpoint reached: {endpoint}", 200
-    
+@app.route("/dashboard", defaults={'file': "index.html"})
+@app.route("/dashboard/<path:file>", methods=["GET"])
+def dashboard(file):
+    if not Authed("/dashboard"): return redirect("/")
+    return send_from_directory("static/dashboard", file)
+
+
+@app.route("/dashboard/api/<endpoint>", methods=["GET"])
+def dashboard_api(endpoint):
+    print(f"SUCCESS: {endpoint}")
+    return "", 200    
+
 @app.route("/public/<path:path>", methods=["GET"])
 def public(path):
     print(f"Path: {path}")
