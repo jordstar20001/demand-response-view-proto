@@ -1,5 +1,5 @@
 {
-    "SECRET_KEY":"this is a secret",
+    "SECRET_KEY":"abcde",
     "USERS_JSON_FN":"data/users.json",
     "AUTH_JSON_FN":"data/auth.json"
 }

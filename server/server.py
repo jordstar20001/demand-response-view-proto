@@ -25,7 +25,7 @@ def Authed(auth_str):
 
 @app.route("/")
 def home():
-    if "USER" in session: redirect("/dashboard", 301)
+    if "USER" in session: return redirect("/dashboard")
     return app.send_static_file("index.html")
 
 @app.route("/login", methods=["POST"])
@@ -41,8 +41,11 @@ def login():
     else:
         return "Not authed", 403
 
-    
-    
+@app.route("/logout", methods=["GET"])
+def logout():
+    if "USER" in session: del session["USER"]
+    return redirect("/")
+
     
 
 @app.route("/dashboard", defaults={'endpoint': None})
