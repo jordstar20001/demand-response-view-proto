@@ -1,7 +1,14 @@
 [   
     {
-        "username":"jordan",
-        "password":"pass",
+        "username":"tesla",
+        "acc_type":"external",
+        "password":"elon",
+        "permissions":["all"]
+    },
+    {
+        "username":"aemo",
+        "password":"dr",
+        "acc_type":"internal",
         "permissions":["all"]
     }
 ]

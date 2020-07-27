@@ -1,5 +1,9 @@
 {
     "SECRET_KEY":"abcde",
     "USERS_JSON_FN":"data/users.json",
-    "AUTH_JSON_FN":"data/auth.json"
+    "AUTH_JSON_FN":"data/auth.json",
+    "ACCTYPE_INDEXPAGES":{
+        "external":"index_ext.html",
+        "internal":"index_int.html"
+    }
 }

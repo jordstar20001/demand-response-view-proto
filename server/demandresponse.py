@@ -3,10 +3,12 @@ import json
 class User():
     username = ""
     password = ""
+    acc_type = ""
     permissions = []
-    def __init__(self, _username, _password, _permissions):
+    def __init__(self, _username, _password, _acc_type, _permissions):
         self.username = _username
         self.password = _password
+        self.acc_type = _acc_type
         self.permissions = _permissions
 
 

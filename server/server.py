@@ -11,14 +11,15 @@ app.config["SECRET_KEY"] = config["SECRET_KEY"]
 
 USERMANAGER = UserManager(config["USERS_JSON_FN"])
 PERMSMANAGER = PermissionManager(config["AUTH_JSON_FN"])
+ACC_INDEX_PAGES = config["ACCTYPE_INDEXPAGES"]
 
 del config
 
-def Authed(auth_str):
-    if not PERMSMANAGER.is_anonymous_action(auth_str):
+def Authed(auth_str, acc_type = None):
+    if not PERMSMANAGER.is_anonymous_action(auth_str) and acc_type != None:
         if "USER" not in session: return False
         session_user = session["USER"]
-        if session_user == None or not PERMSMANAGER.user_permitted(session_user, auth_str):
+        if session_user == None or not PERMSMANAGER.user_permitted(session_user, auth_str) or (session_user["acc_type"] != acc_type and acc_type != None):
             return False
 
     return True
@@ -31,8 +32,7 @@ def home():
 @app.route("/login", methods=["POST"])
 def login():
     loginData = request.form
-    u,p = loginData["txtUsername"], loginData["txtPassword"]
-    print(f"User: {u} | Pass: {p}")
+    u, p = loginData["txtUsername"], loginData["txtPassword"]
 
     if USERMANAGER.valid_user(u, p):
         session["USER"] = USERMANAGER.get_user_by_username(u)
@@ -48,16 +48,22 @@ def logout():
 
     
 
-@app.route("/dashboard", defaults={'file': "index.html"})
+@app.route("/dashboard", defaults={'file': None})
 @app.route("/dashboard/<path:file>", methods=["GET"])
 def dashboard(file):
     if not Authed("/dashboard"): return redirect("/")
+    if file == None:
+        user = session["USER"]
+        if user["acc_type"] not in ACC_INDEX_PAGES:
+            return f"Index webpage not found for account type {user['acc_type']}", 404
+
+        return send_from_directory("static/dashboard", ACC_INDEX_PAGES[user["acc_type"]])
     return send_from_directory("static/dashboard", file)
 
 
-@app.route("/dashboard/api/<endpoint>", methods=["GET"])
+@app.route("/dashboard/api/<endpoint>", methods=["GET", "POST"])
 def dashboard_api(endpoint):
-    print(f"SUCCESS: {endpoint}")
+    if Authed(endpoint): return 200
     return "", 200    
 
 @app.route("/public/<path:path>", methods=["GET"])
@@ -66,4 +72,5 @@ def public(path):
     return send_from_directory("static/public", path)
 
 # Run the server
-app.run("0.0.0.0", 8080)
+if __name__ == "__main__":
+    app.run("0.0.0.0", 8080)
